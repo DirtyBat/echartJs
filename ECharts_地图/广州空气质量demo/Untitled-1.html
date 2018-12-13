@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>#charts{width:600px;height:600px;}</style>
+	</head>
+	<body>
+		<div id="charts"></div>
+	</body>
+	<script src="E:\Echarts\echarts.js"></script>
+		<script src="E:\Echarts\guangzhou.js"></script>
+	<script>
+		var mycharts = echarts.init(document.getElementById('charts'))
+		//自定义城市坐标菜单
+		var geoCoordMap = {
+		    "荔湾区":[113.243038,23.124943],
+		    "越秀区":[113.280714,23.125624],
+		    "海珠区":[113.262008,23.103131],
+		    "天河区":[113.335367,23.13559],
+		    "白云区":[113.262831,23.162281],
+		    "黄埔区":[113.450761,23.103239],
+		    "番禺区":[113.364619,22.938582],
+		    "花都区":[113.211184,23.39205],
+		    "南沙区":[113.53738,22.794531],
+		    "从化区":[113.587386,23.545283],
+		};
+		//拼接对象数组
+		var convertData = function (data) {
+		    var res = [];
+		    for (var i = 0; i < data.length; i++) {
+		        var geoCoord = geoCoordMap[data[i].name];//获取坐标
+		        if (geoCoord) {//如果有坐标
+		        	res.push({//创建对象数组，
+                        name: data[i].name,  
+                        value: geoCoord.concat(data[i].value)  //用连接数组的形式将value值加入
+                    });  
+		            //res.push(geoCoord.concat(data[i].value));
+		            //res.push(geoCoord.concat(data[i].name));
+		        }
+		    }
+		    return res;
+		};
+		option = {
+		    backgroundColor: '#404a59',//整个画布背景
+		    //标题组件
+		    title: {
+		        text: '全国主要城市空气质量',
+		        subtext: 'data from PM25.in',
+		        sublink: 'http://www.pm25.in',
+		        left: 'center',
+		        textStyle: {
+		            color: '#fff'
+		        }
+		    },
+		    //提示框组件
+		    tooltip: {
+		        trigger: 'item',
+		        "confine": true,
+	            "formatter": (p)=>{//自定义提示信息
+	              	let dataCon = p.data;
+	                txtCon =dataCon.name+'<br>值:'+dataCon.value[2];
+	                return txtCon;
+	            }
+		    },
+		    //左下lengend
+		    visualMap: {
+		        min: 0,//最小
+		        max: 300,//最大
+		        splitNumber: 5,//共分5层
+		        color: ['#ff6300','#eac736','#50a3ba'],//颜色从高到低依次渐变
+		        textStyle: {
+		            color: '#fff'
+		        }
+		    },
+		    //地图区域样式
+		    geo: {
+		        map: 'guangzhou',
+		        label: {
+		            emphasis: {
+		                show: false
+		            }
+		        },
+		        itemStyle: {
+		        	//未激活样式
+		            normal: {
+		                areaColor: '#323c48',
+		                borderColor: '#111'
+		            },
+		            //激活样式
+		            emphasis: {
+		                areaColor: '#2a333d'
+		            }
+		        }
+		    },
+		    //数据
+		    series: [
+		        {
+		            name: 'pm2.5',
+		            type: 'scatter',
+		            coordinateSystem: 'geo',
+		            data: convertData([
+		                {name: "荔湾区", value: 9},
+		                {name: "越秀区", value: 12},
+		                {name: "海珠区", value: 12},
+		                {name: "天河区", value: 12},
+		                {name: "白云区", value: 14,},
+		                {name: "黄埔区", value: 15},
+		                {name: "番禺区", value: 100},
+		                {name: "花都区", value: 18},
+		                {name: "南沙区", value: 300},
+		                {name: "从化区", value: 19},
+		            ]),
+		            symbolSize: 12,
+		            //直接在点上显示标签
+		            label: {
+		            	show:false,
+//		                normal: {
+//		                    show: true
+//		                },
+//		                emphasis: {
+//		                    show: true
+//		                },
+		                formatter:'{b}',
+		                offset:[15,-15],//文字的相对偏移
+		            },
+		            //标签的样式
+		            itemStyle: {
+		                emphasis: {
+		                    borderColor: '#fff',
+		                    borderWidth: 1
+		                }
+		            }
+		        }
+		    ]
+		}
+		mycharts.setOption(option);
+	</script>
+</html>
