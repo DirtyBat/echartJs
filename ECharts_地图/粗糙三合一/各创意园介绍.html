@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>#charts{width:600px;height:600px;}</style>
+	</head>
+	<body>
+		<div id="charts"></div>
+	</body>
+	<script src="echarts.js"></script>
+		<script src="guangzhou.js"></script>
+	<script>
+		var mycharts = echarts.init(document.getElementById('charts'))
+
+		var geoCoordMap = {
+		    "红专厂":[113.37057,23.11089],
+		    "广州TIT创意园":[113.33175255943,23.104719332999],
+		    "1850创意园":[113.2481660897,23.1012443789],
+		    "289文艺Park":[113.3211207827,23.1300552519],
+		    "铭润文化创意园":[113.2978219039,23.2152664889],
+		    "紫泥堂创意园":[113.2924038755,22.8963856643],
+		    "1978文化创意园":[113.8501711333,23.3026291338],
+		    "励弘文创旗舰园":[113.4262555361,23.1706429115],
+		                         
+		};
+                              
+		//拼接对象数组
+		var convertData = function (data) {
+		    var res = [];
+		    for (var i = 0; i < data.length; i++) {
+		        var geoCoord = geoCoordMap[data[i].name];//获取坐标
+		        if (geoCoord) {//如果有坐标
+		        	res.push({//创建对象数组，
+                        name: data[i].name,  
+                        value: geoCoord.concat(data[i].value)  //用连接数组的形式将value值加入
+                    });  
+		            //res.push(geoCoord.concat(data[i].value));
+		            //res.push(geoCoord.concat(data[i].name));
+		        }
+		    }
+		    return res;
+		};
+		option = {
+		    backgroundColor: '#404a59',//整个画布背景
+		    //标题组件
+		    title: {
+		        text: '广州各区主要创意园区分布',
+		       
+		        left: 'center',
+		        textStyle: {
+		            color: '#fff'
+		        }
+		    },
+		    //提示框组件
+		    tooltip: {
+		        trigger: 'item',
+		        "confine": true,
+	            "formatter": (p)=>{//自定义提示信息
+	              	let dataCon = p.data;
+	                txtCon =dataCon.name+'<br>简介:'+dataCon.value[2];
+	                return txtCon;
+	            }
+		    },
+// 		    //左下lengend
+// 		    visualMap: {
+// 		        min: 0,//最小
+// 		        max: 100,//最大
+// 		        splitNumber: 5,//共分5层
+// 		        color: ['#ff6300','#eac736','#50a3ba'],//颜色从高到低依次渐变
+// 		        textStyle: {
+// 		            color: '#fff'
+// 		        }
+// 		    },
+		    //地图区域样式
+		    geo: {
+		        map: 'guangzhou',
+		        label: {
+		            emphasis: {
+		                show: false
+		            }
+		        },
+		        itemStyle: {
+		        	//未激活样式
+		            normal: {
+		                areaColor: '#323c48',
+		                borderColor: '#111'
+		            },
+		            //激活样式
+		            emphasis: {
+		                areaColor: '#2a333d'
+		            }
+		        }
+		    },
+		    //数据
+		    series: [
+		        {
+		            name: '创意园区数量',
+		            type: 'scatter',
+		            coordinateSystem: 'geo',
+		            data: convertData([
+		                {name: "红专厂", value: "广州第一家非企业非房地产包装的真正意义创意区，是一个以国际标准定义的艺术、生活中心。<br>现在，红专厂正以现代的视野、国际的平台，探索、打造富有时尚、创意、艺术和人文精神的新领域。"},
+		                {name: "广州TIT创意园", value: "广州TIT纺织服装创意园项目，位于海珠区客村地铁A出口的广州纺织机械厂原址，<br>处于城市新中轴线上，与广州新电视塔南广场连为一体。其前身是建于1956年的广州纺织机械厂。"},
+		                {name: "1850创意园", value: "园区由原华南最大的金珠江双氧水厂改造而成，占地5万多平方米，总建筑面积3万多平方米，<br>由76栋错落有致的厂房车间组成。通过利用和改造旧厂房车间，打造艺术创作、设计、时常展览、文化交流、办公生活的品味空间。"},
+		                {name: "289文艺Park", value: "“艺术园区、艺术媒体、艺术电商”三位一体的产业模式，不仅为入园企业提供媒体服务，<br>还提供金融支持、文创孵化等服务，形成融艺术体验、艺术展演、文化创意、创业孵化为一体的“文创+艺术”综合体，构建起内部企业互相关联、共同成长，外部连接一切、共建共享的文化产业生态。"},
+		                {name: "铭润文化创意园", value: "铭润集团结合广州市政府亿元建造的岭南主题公园，而精心打造的文化创意园，<br>以办公，文化艺术品展示及交流为主，弘扬和发展岭南文化。"},
+		                {name: "紫泥堂创意园", value: "紫泥堂坚守“协调、共享、再生”的发展理念，改造过程中不会破坏整个园区的生态环境和历史建筑，<br>同时也会合理再利用改造过程中拆除的建筑材料，重新设计创造出带着独有工业艺术气息的艺术装置放置在园区每个角落。"},
+		                {name: "1978文化创意园", value: "通过对增城原糖纸厂以及周边旧厂房、旧仓库、散落民居以及旧村庄进行创意性开发改造，<br>从而形成了一个带有记忆性元素的全新文化创意区域。项目主要吸引电影、音乐、广告、设计等文创产业，旨在打造以电影产业为核心的特色小镇，是广东省首个旅游文化创意产业园。"},
+		                {name: "励弘文创旗舰园", value: "励弘文创旗舰园是广州首批国家级文化与科技融合的示范基地，聚集创意设计、影视动漫、游戏、VR/AR等领域的一线企业，<br>打造顶尖“科技+”文创旗舰园。科技已融入渗透到文化产品创作、生产、传播、消费等各个环节，已成为文化产业发展的核心引擎。"},
+		         
+		            ]),
+		            symbolSize: 12,
+		            //直接在点上显示标签
+		            label: {
+		            	show:false,
+//		                normal: {
+//		                    show: true
+//		                },
+//		                emphasis: {
+//		                    show: true
+//		                },
+		                formatter:'{b}',
+		                offset:[15,-15],//文字的相对偏移
+		            },
+		            //标签的样式
+		            itemStyle: {
+		                emphasis: {
+		                    borderColor: '#fff',
+		                    borderWidth: 1
+		                }
+		            }
+		        }
+		    ]
+		}
+		mycharts.setOption(option);
+	</script>
+</html>
